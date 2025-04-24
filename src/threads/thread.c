@@ -12,6 +12,7 @@
 #include "threads/synch.h"
 #include "threads/vaddr.h"
 #include "threads/thread.h"
+#include "threads/fixedPoint.h"
 #ifdef USERPROG
 #include "userprog/process.h"
 #endif
@@ -613,7 +614,7 @@ void calculate_dynamic_priority(struct thread *t, void *aux UNUSED)
   Fixed_P raw_priority = fixed_sub(fixed_from_int(PRI_MAX), fixed_add(recent_cpu_component, nice_component));
 
   // Convert the raw priority (Fixed_P) to an integer and assign it to dynamic_priority
-  t->dynamic_priority = fixed_to_int(raw_priority);
+  t->dynamic_priority = fixed_to_int_floor(raw_priority);
 
   // Ensure the dynamic priority stays within the allowed bounds
   if (t->dynamic_priority > PRI_MAX)
@@ -642,6 +643,15 @@ void calculate_load_avg()
     Fixed_P term2 = fixed_mul(fixed_div_int(fixed_from_int(1), 60),fixed_from_int(ready_threads));
 
     load_avg = fixed_add(term1, term2);
+}
+void update_load_avg(void) 
+{
+  // Number of threads ready to run in the system.
+  int ready_threads = list_size(&ready_list);
+
+
+  load_avg = fixed_add(fixed_mul_int(load_avg, 59), fixed_from_int(ready_threads));     
+  load_avg = fixed_div_int(load_avg, 60);  
 }
 
 /* Offset of `stack' member within `struct thread'.

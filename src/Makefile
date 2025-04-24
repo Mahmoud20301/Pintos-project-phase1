@@ -15,7 +15,7 @@ distclean:: clean
 
 TAGS_SUBDIRS = $(BUILD_SUBDIRS) devices lib
 TAGS_SOURCES = find $(TAGS_SUBDIRS) -name \*.[chS] -print
-
+SOURCE
 TAGS::
 	etags --members `$(TAGS_SOURCES)`
 
