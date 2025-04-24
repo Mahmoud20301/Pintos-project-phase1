@@ -86,14 +86,35 @@ timer_elapsed (int64_t then)
 
 /* Sleeps for approximately TICKS timer ticks.  Interrupts must
    be turned on. */
+
+   extern struct list *sleep_list;
+
+/* Comparator for ordering threads by wake-up time. */
+bool wakeup_comp(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
+  struct thread *t_a = list_entry(a, struct thread, elem);
+  struct thread *t_b = list_entry(b, struct thread, elem);
+  return t_a->wakeup_tick < t_b->wakeup_tick;
+}
+
+
 void
 timer_sleep (int64_t ticks) 
 {
-  int64_t start = timer_ticks ();
+  int64_t start = timer_ticks ();  //it call the current time and intializing start with it
+  struct thread *cur = thread_current();
+  enum intr_level old_level;
+
+
+  cur->wakeup_tick = start + ticks;
+  old_level = intr_disable();        // Turn off interrupts , beacuse list is defined globally critical section
+  //start critical section
+  list_insert_ordered(&sleep_list,&cur->elem,wakeup_comp,NULL);
+  thread_block();                    // Block until unblocked by timer interrupt
+  //End critical section
+  intr_set_level(old_level);         // Restore interrupts
 
   ASSERT (intr_get_level () == INTR_ON);
-  while (timer_elapsed (start) < ticks) 
-    thread_yield ();
+
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
@@ -172,6 +193,17 @@ timer_interrupt (struct intr_frame *args UNUSED)
 {
     ticks++;
     thread_tick();
+
+    while (!list_empty(&sleep_list)) {
+      struct thread *t = list_entry(list_front(&sleep_list), struct thread, elem);
+      if (t->wakeup_tick <= ticks) {
+          list_pop_front(&sleep_list);
+          thread_unblock(t);
+      } else {
+          break; // list is ordered, no need to check further
+      }
+  }
+  
     if (timer_ticks() % TIMER_FREQ == 0) {               //update every 1 sec
         update_load_avg();
         thread_foreach(calculate_recent_cpu, NULL);    // update recent_cpu for all threads

@@ -97,7 +97,7 @@ struct thread
     int nice ;
     int dynamic_priority;               // used in advanced scheduler 
     Fixed_P  recent_cpu;
-    
+    int64_t wakeup_tick;            //local tick for each thread
     
 
     /* Shared between thread.c and synch.c. */
