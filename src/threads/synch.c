@@ -201,6 +201,7 @@ lock_acquire (struct lock *lock)
   if (lock->holder != NULL && thread_mlfqs == false) {
     curr->waiting_on_lock = lock;
     donate_priority(curr, lock);
+  }
   ////////////////////////////////////////////////////////////////////////////////
   sema_down (&lock->semaphore);
   curr->waiting_on_lock = NULL;          //////////////ADDED
