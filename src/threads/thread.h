@@ -5,6 +5,9 @@
 #include <list.h>
 #include "threads/fixedPoint.h"
 #include <stdint.h>
+////////////ADDED//////////////////////////////////////////////////////////
+#include "threads/synch.h"    /*to use struct lock in struct thread*/
+///////////////////////////////////////////////////////////////////////////
 
 /* States in a thread's life cycle. */
 enum thread_status
@@ -91,7 +94,12 @@ struct thread
     enum thread_status status;          /* Thread state. */
     char name[16];                      /* Name (for debugging purposes). */
     uint8_t *stack;                     /* Saved stack pointer. */
-    int priority;                       /* Priority. */
+    int priority;                       /* Effective (donated) priority */
+    //////////////////ADDED//////////////////////////////////////////////////////////////////////////////////////
+    int original_priority;              /*Base priority set by the thread.*/ 
+    struct list locks_held;              /*List of Locks this thread currently holds*/
+    struct lock *waiting_on_lock;       /*lock which the thread is waiting on*/
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     struct list_elem allelem;           /* List element for all threads list. */
     int nice ;
     int dynamic_priority;               // used in advanced scheduler 
