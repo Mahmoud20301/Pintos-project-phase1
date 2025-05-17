@@ -7,11 +7,9 @@
 /* Number of timer interrupts per second. */
 #define TIMER_FREQ 100
 
-/* Timer initialization and calibration */
 void timer_init(void);
 void timer_calibrate(void);
 
-/* Timer tick management */
 int64_t timer_ticks(void);
 int64_t timer_elapsed(int64_t);
 
@@ -26,7 +24,6 @@ void timer_mdelay(int64_t milliseconds);
 void timer_udelay(int64_t microseconds);
 void timer_ndelay(int64_t nanoseconds);
 
-/* Timer stats */
 void timer_print_stats(void);
 
-#endif /* DEVICES_TIMER_H */
+#endif /* devices/timer.h */

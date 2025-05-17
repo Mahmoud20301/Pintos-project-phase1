@@ -1,4 +1,4 @@
-#include "fixedPoint.h"
+#include "fixed-point.h"
 #include <stdio.h>
 #include "stdint.h"
 
