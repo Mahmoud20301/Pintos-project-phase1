@@ -172,7 +172,6 @@ void tryThreadYield(void)
   }
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /* Prints thread statistics. */
 void thread_print_stats(void)
@@ -237,7 +236,7 @@ tid_t thread_create(const char *name, int priority,
   return tid;
 }
 
-/* Puts the current thread to sleep.  It will not be scheduled
+/* Puts the current thread to sleep. It will not be scheduled
    again until awoken by thread_unblock().
    This function must be called with interrupts turned off.  It
    is usually a better idea to use one of the synchronization
@@ -409,20 +408,23 @@ void
 thread_set_priority(int new_priority)
 {////////////////////////////////Added///////////////////////////////////////////////
   struct thread *cur = thread_current();
+  int old_priority = cur->priority;
   /*Always update the base/original priority*/ 
   cur->original_priority = new_priority;
 
-  /*Only change the effective priority if there's no donation*/ 
-  if (new_priority > cur->priority)  {
+  /*Always update if no donations active*/ 
+  if (list_empty(&cur->locks_held)) {
     cur->priority = new_priority;
   }
 
-  // Yield CPU if there's a higher-priority thread ready
-  if (!list_empty(&ready_list)) {
-    struct thread *next = list_entry(list_front(&ready_list), struct thread, elem);
-    if (cur->priority < next->priority) {
-      thread_yield();
-    }
+  /*For donated priorities, only increase*/
+  else if (new_priority > cur->priority)  {
+    cur->priority = new_priority;
+  }
+
+  /*Force yield if priority decreased*/ 
+  if (new_priority < old_priority) {
+    thread_yield();
   }
   //////////////////////////////////////////////////////////////////////////////////////////
   
@@ -445,7 +447,6 @@ thread_set_nice(int nice UNUSED)
   ASSERT(nice >= NICE_MIN && nice <= NICE_MAX);
   thread_current()->nice = nice;
   calculate_dynamic_priority(thread_current(), NULL);
-  thread_yield();
   //completed
 }
 

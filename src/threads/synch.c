@@ -210,51 +210,7 @@ lock_acquire(struct lock *lock)
 
   lock->holder = curr;
   list_push_back(&curr->locks_held, &lock->held_elem); //////////////////////ADDED
-/*
-  if (lock->holder != NULL)
-  {
-    enum intr_level old_level = intr_disable();
-    thread_current()->currentLock = lock;
-    if (!thread_mlfqs)
-    {
-      int curr_priority = thread_get_priority();
-      struct lock *temporary_lock = lock;
-      struct thread *temporary_hold = lock->holder;
-      while (temporary_lock->max_priority < curr_priority)
-      {
-        temporary_lock->max_priority = curr_priority;
-        threadUpdatePriority(temporary_hold);
-        if (temporary_hold->status == THREAD_READY)
-        {
-          threadReadyRearrange(temporary_hold);
-        }
-        temporary_lock = temporary_hold->currentLock;
-        if (temporary_lock == NULL)
-        {
-          break;
-        }
-        else
-        {
-          temporary_hold = temporary_lock->holder;
-        }
-        ASSERT(temporary_hold);
-      }
-    }
-    intr_set_level(old_level);
-  }
-  sema_down(&lock->semaphore);
-  enum intr_level old_level = intr_disable();
-  thread_current()->currentLock = NULL;
-  list_push_back(&thread_current()->locks_held, &lock->elem);
-  lock->holder = thread_current();
-  intr_set_level(old_level);
-  if (!thread_mlfqs)
-  {
-    update_lock_priority(lock);
-    threadUpdatePriority(thread_current());
-    thread_yield();
-  }
-    */
+
 }
 
 

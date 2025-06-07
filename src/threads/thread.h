@@ -17,9 +17,10 @@ enum thread_status
    THREAD_BLOCKED, /* Waiting for an event to trigger. */
    THREAD_DYING    /* About to be destroyed. */
 };
-#define RECENT_CPU_DEFAULT fix_from_int(0)
+#define RECENT_CPU_DEFAULT fixed_from_int(0)
 /* Thread identifier type.
    You can redefine this to whatever type you like. */
+   
 typedef int tid_t;
 #define TID_ERROR ((tid_t) - 1) /* Error value for tid_t. */
 
@@ -36,6 +37,8 @@ typedef int tid_t;
 #define NICE_DEFAULT 0
 #define NICE_MIN -20
 ////////////////////////////////////////
+
+
 
 
 /* A kernel thread or user process.
