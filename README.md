@@ -38,9 +38,3 @@ The following is a list of the documents to explain and document the project and
 3. [The Pintos Instructional Operating System Kernel (PintOS Paper)](guides/The&#32;Pintos&#32;Instructional&#32;Operating&#32;System&#32;Kernel.pdf): A good reading for instructors.
 4. [The Pintos Instructional Operating System Kernel (PintOS Presentation)](guides/SIGCSE2009-Pintos.pdf): A good reading for instructors.
 
-## Sessions' Videos
-
-Here's a list of sessions I made (in Arabic) for Alexandria University, explaining PintOS & its phases requirements:
-
-1. [Phase 1 Requirements](https://youtu.be/RLx_0nnEjaM)
-2. [Phase 2 Requirements](https://youtu.be/bFUmvVgmbOs)
